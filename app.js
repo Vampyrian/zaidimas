@@ -13,6 +13,5 @@ const server = http.createServer((req, res) => {
     res.end('Hello World\n');
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Serveris pasileido adresu http://${hostname}:${port}/`);
-});
+server.listen(port);
+console.log('serveris pasileido ant porto: ' + port);
