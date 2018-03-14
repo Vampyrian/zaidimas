@@ -2,9 +2,10 @@
   "name": "zaidimas",
   "version": "0.0.1",
   "dependencies": {
-    
+    "express": "^4.16.2",
+    "express-ws": "^3.0.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   }
 }
