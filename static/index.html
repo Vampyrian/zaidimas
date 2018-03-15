@@ -8,6 +8,9 @@
 </head>
 
 <body>
+
+    <script src="transport/MagicTransport.js"></script>
+
     <h1>Labas H1</h1>
 
     <canvas id="myCanvas" width="480" height="320"> </canvas>
@@ -23,65 +26,15 @@
 
     <script>
         'use strict';
-        var hash = location.hash;
-        var host = location.host;
-        var hostname = location.hostname;
-        var href = location.href;
-        var origin = location.origin;
-        var pathname = location.pathname;
-        var port = location.port;
-        var protocol = location.protocol;
-        var search = location.search;
 
-        const address = ['https:'].includes(location.protocol)
-            ? 'wss://'+ location.host + '/ws'
-            : 'ws://'+ location.host + '/ws';
-
-        var socket = new WebSocket(address);
-        
-        socket.onopen = function (event) {
-            alert('Atsidare WebSocket susijungimas');
-            console.dir(socket);
-        }
-        
-        socket.onclose = function (event) {
-            if (event.wasClean) {
-                alert('uzdarytas sujungimas svariai');
-            } else {
-                alert('Kazkodel nutruko rysis'); //
-            }
-            alert('Kodas: ' + event.code + ' Priezastis: ' + event.reason);
-        }
-
-        socket.onmessage = function (event) {
-            let incomingMessage = event.data;
-            showMessage(incomingMessage);
-        }
-
-        socket.onerror = function (err) {
-            alert('Klaida' + err.message);
-        }
+        const magicTransport = new MagicTransport();
 
         document.forms.publish.onsubmit = function () {
-            let outgoingMessage = this.message.value;
-            socket.send(outgoingMessage);
+            var zinute = {};
+            zinute.zinute = this.message.value;
+            magicTransport.send(zinute);
             return false;
         }
-
-        function showMessage(message) {
-            var messageElem = document.createElement('div');
-            messageElem.appendChild(document.createTextNode(message));
-            document.getElementById('subscribe').appendChild(messageElem);
-        }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -272,6 +225,8 @@
 
     </script>
 
+    <!--<script src="transport/MagicTransport.js"></script>-->
+    <script src="main.js"></script>
 </body>
 
 </html>
