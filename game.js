@@ -3,6 +3,17 @@ const debug = require('debug')('game');
 
 //Zaidimo logika serveryje
 
+const canvasWidth = 480;
+const canvasHeight = 320;
+
+const paddleWidth = 80;
+const paddleHeight = 10;
+const paddleStep = 10;
+
+const ballRadius = 10;
+const ballStep = 10;
+
+
 module.exports = class Game {
 
     constructor () {
@@ -11,6 +22,7 @@ module.exports = class Game {
         this.player2 = null;
         this.inPlay = false;
         this.gameState = null;
+        this.interval = null;
     }
 
     /**
@@ -25,6 +37,7 @@ module.exports = class Game {
         } else if (!this.player2) {
             this.player2 = player;
             id = 'player2';
+            this.startNewGame();
         } else {
             debug('Nebera vietos naujiems zaidejams');
             return;
@@ -34,12 +47,10 @@ module.exports = class Game {
         debug('Pridejome nauja zaideja vardu: ' + id);
 
         player.on('message', (msg)=>{
-            debug('sustra funkcija message');
             this.onNewMessage(id, msg);
         })
 
         player.on('close', (msg)=>{
-            debug('sustra funkcija close');
             this.stopGame(id);
         })
     }
@@ -60,6 +71,10 @@ module.exports = class Game {
         this.player1 = null;
         this.player2 = null;
         this.gameState = null;
+        this.inPlay = false;
+        if(this.interval) {
+            clearInterval(this.interval);
+        }
     }
 
     /**
@@ -69,33 +84,65 @@ module.exports = class Game {
      */
     onNewMessage (id, msg) {
         debug('Gavau nauja zinute is ' + id + ' ir tekstu ' + msg);
-        if (id == 'player1') {
-            this.player2.send(msg);
-        } else {
-            this.player1.send(msg);
+        let message = JSON.parse(msg);
+        for (let prop in message) {
+            debug(prop);
+            debug(id);
+            this[prop](id);
         }
+
     }
 
     onLeft(id){
         switch (id) {
             case 'player1' : {
-
+                debug('pirmas i left' + id);
+                if (this.gameState) {
+                    this.gameState.player1.xpos = this.gameState.player1.xpos - paddleStep;
+                    if ((this.gameState.player1.xpos - paddleWidth/2) < 0 ) {
+                        this.gameState.player1.xpos = paddleWidth/2;
+                    }
+                }
+                break;
             }
             case 'player2' : {
-
+                debug('antras i left' + id);
+                if (this.gameState) {
+                    this.gameState.player2.xpos = this.gameState.player2.xpos - paddleStep;
+                    if ((this.gameState.player2.xpos - paddleWidth/2) < 0 ) {
+                        this.gameState.player2.xpos = paddleWidth/2;
+                    }
+                }
+                break;
             }
         }
+        console.dir(this.gameState);
     }
 
     onRight(id) {
         switch (id) {
             case 'player1' : {
-
+                debug('pirmas i right' + id);
+                if (this.gameState) {
+                    this.gameState.player1.xpos = this.gameState.player1.xpos + paddleStep;
+                    if ((this.gameState.player1.xpos + paddleWidth/2) > canvasWidth ) {
+                        this.gameState.player1.xpos = canvasWidth - paddleWidth/2;
+                    }
+                }
+                break;
             }
             case 'player2' : {
-
+                debug('antras i right' + id);
+                if (this.gameState) {
+                    this.gameState.player2.xpos = this.gameState.player2.xpos + paddleStep;
+                    if ((this.gameState.player2.xpos + paddleWidth/2) > canvasWidth ) {
+                        this.gameState.player2.xpos = canvasWidth - paddleWidth/2;
+                    }
+                }
+                break;
             }
         }
+        console.dir(this.gameState);
     }
 
     onFire(id) {
@@ -110,18 +157,44 @@ module.exports = class Game {
     }
 
     startNewGame () {
+        this.inPlay = true;
         this.gameState = {
             player1: {
-                xpos: 0,
+                xpos: canvasWidth/2,
             },
             player2: {
-                xpos: 0,
+                xpos: canvasWidth/2,
             }
+        }
+        this.interval = setInterval(()=>this.gameLoop(), 30);
+    }
+
+    gameLoop() {
+        if(this.gameState) {
+            this.player1.send(JSON.stringify(this.prepareToPlayer1()));
+            this.player2.send(JSON.stringify(this.prepareToPlayer2()));
         }
     }
 
+    prepareToPlayer1() {
+        let state = JSON.parse(JSON.stringify(this.gameState));
 
+        state.player2.xpos = state.player2.xpos;
+        return state;
+    }
 
+    prepareToPlayer2() {
 
+        let state2 = {}
+        state2.player1 = {};
+        state2.player2 = {};
+        state2.player1.xpos = this.gameState.player2.xpos;
+        state2.player2.xpos = this.gameState.player1.xpos;
 
+        return state2;
+    }
+
+    send() {
+
+    }
 }

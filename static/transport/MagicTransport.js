@@ -1,5 +1,8 @@
 window.MagicTransport = (function (windows) {
 
+    const Mediator = windows.Mediator;
+    const GameScena = windows.GameScena;
+
     class MagicTransport {
 
         constructor() {
@@ -9,6 +12,9 @@ window.MagicTransport = (function (windows) {
             }
             console.log('Sukuriu MagicTransport _instanca pirma karta');
             MagicTransport.__instance = this;
+
+            this.mediator = new Mediator();
+            this.mediator.subscribe(EVENTS.GAME_CONTROLLER_EVENT, this.send.bind(this));
 
             //Atidarau web socket susijungima
             const address = ['https:'].includes(location.protocol)
@@ -38,6 +44,11 @@ window.MagicTransport = (function (windows) {
                     console.log('Atsitiko klaida' + onErrorData);
                 }
             }.bind(this)
+
+
+            const canvas = document.getElementById('myCanvas');
+            this.gameScena = new GameScena(canvas);
+
         }
 
         onNewMessage(newMessage) {
@@ -45,11 +56,18 @@ window.MagicTransport = (function (windows) {
             let message = JSON.parse(messageText);
             console.log('Gavau nauja zinute is serverio po parserio');
             console.dir(message);
+            this.gameScena.setState(message);
+            this.gameScena.render();
         }
 
         send(data) {
             console.log('Isiunciu nauja zinute serveriui');
             this.ws.send(JSON.stringify(data))
+        }
+
+
+        kazka(duomenys) {
+            console.log('Gavau duomenis is mediatoriaus' + duomenys);
         }
     }
 
