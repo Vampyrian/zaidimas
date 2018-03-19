@@ -85,20 +85,20 @@ module.exports = class Game {
     onNewMessage (id, msg) {
         debug('Gavau nauja zinute is ' + id + ' ir tekstu ' + msg);
         let message = JSON.parse(msg);
-        for (let prop in message) {
-            debug(prop);
-            debug(id);
-            this[prop](id);
-        }
 
+        for (let prop in message) {
+            if (message[prop] > 0) {
+                this[prop](id, message[prop]);
+            }
+        }
     }
 
-    onLeft(id){
+    onLeft(id, count){
         switch (id) {
             case 'player1' : {
                 debug('pirmas i left' + id);
                 if (this.gameState) {
-                    this.gameState.player1.xpos = this.gameState.player1.xpos - paddleStep;
+                    this.gameState.player1.xpos = this.gameState.player1.xpos - paddleStep * count;
                     if ((this.gameState.player1.xpos - paddleWidth/2) < 0 ) {
                         this.gameState.player1.xpos = paddleWidth/2;
                     }
@@ -108,7 +108,7 @@ module.exports = class Game {
             case 'player2' : {
                 debug('antras i left' + id);
                 if (this.gameState) {
-                    this.gameState.player2.xpos = this.gameState.player2.xpos - paddleStep;
+                    this.gameState.player2.xpos = this.gameState.player2.xpos - paddleStep * count;
                     if ((this.gameState.player2.xpos - paddleWidth/2) < 0 ) {
                         this.gameState.player2.xpos = paddleWidth/2;
                     }
@@ -119,12 +119,12 @@ module.exports = class Game {
         console.dir(this.gameState);
     }
 
-    onRight(id) {
+    onRight(id, count) {
         switch (id) {
             case 'player1' : {
                 debug('pirmas i right' + id);
                 if (this.gameState) {
-                    this.gameState.player1.xpos = this.gameState.player1.xpos + paddleStep;
+                    this.gameState.player1.xpos = this.gameState.player1.xpos + paddleStep * count;
                     if ((this.gameState.player1.xpos + paddleWidth/2) > canvasWidth ) {
                         this.gameState.player1.xpos = canvasWidth - paddleWidth/2;
                     }
@@ -134,7 +134,7 @@ module.exports = class Game {
             case 'player2' : {
                 debug('antras i right' + id);
                 if (this.gameState) {
-                    this.gameState.player2.xpos = this.gameState.player2.xpos + paddleStep;
+                    this.gameState.player2.xpos = this.gameState.player2.xpos + paddleStep * count;
                     if ((this.gameState.player2.xpos + paddleWidth/2) > canvasWidth ) {
                         this.gameState.player2.xpos = canvasWidth - paddleWidth/2;
                     }
@@ -145,7 +145,7 @@ module.exports = class Game {
         console.dir(this.gameState);
     }
 
-    onFire(id) {
+    onSpace(id, count) {
         switch (id) {
             case 'player1' : {
 

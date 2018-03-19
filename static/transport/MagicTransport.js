@@ -1,7 +1,6 @@
 window.MagicTransport = (function (windows) {
 
     const Mediator = windows.Mediator;
-    const GameScena = windows.GameScena;
 
     class MagicTransport {
 
@@ -44,11 +43,6 @@ window.MagicTransport = (function (windows) {
                     console.log('Atsitiko klaida' + onErrorData);
                 }
             }.bind(this)
-
-
-            const canvas = document.getElementById('myCanvas');
-            this.gameScena = new GameScena(canvas);
-
         }
 
         onNewMessage(newMessage) {
@@ -56,8 +50,6 @@ window.MagicTransport = (function (windows) {
             let message = JSON.parse(messageText);
             console.log('Gavau nauja zinute is serverio po parserio');
             console.dir(message);
-            this.gameScena.setState(message);
-            this.gameScena.render();
         }
 
         send(data) {
