@@ -1,5 +1,8 @@
 window.GameManager = (function (window) {
 
+    const mediator = new window.Mediator();
+    const scena = new window.GameScena();
+
     class GameManager {
         constructor () {
             if (GameManager.__instance) {
@@ -10,27 +13,35 @@ window.GameManager = (function (window) {
             GameManager.__instance = this;
 
             this.gameController = new GameController();
-            this.magicTransport = new MagicTransport();
-
-            this.startGame();
+            mediator.subscribe(EVENTS.RECEIVED_FROM_SERVER, this.onNewMessage.bind(this));
         }
 
-        onNewState (data) {
-
+        onNewState (state) {
+            scena.setState(state);
         }
 
         startGame() {
-            // this.requestAnimationFrameID = requestAnimationFrame(this.gameloop.bind(this));
-            this.requestAnimationFrameID = setInterval(this.gameLoop.bind(this), 5000);
+            console.log('Pasileido requestAnimationFrame');
+            this.requestAnimationFrameID = requestAnimationFrame(this.gameLoop.bind(this));
+            var a = 8;
+            // this.requestAnimationFrameID = setInterval(this.gameLoop.bind(this), 5000);
         }
 
-        gameLoop() {
+        gameLoop(timestamp) {
             let gameControllerDiff = this.gameController.diff();
             if (gameControllerDiff.onSpace>0 || gameControllerDiff.onRight>0 || gameControllerDiff.onLeft>0) {
-                this.magicTransport.send(gameControllerDiff);
+                mediator.emit(EVENTS.SEND_TO_SERVER, gameControllerDiff);
             }
 
+            this.requestAnimationFrameID = requestAnimationFrame(this.gameLoop.bind(this));
+        }
 
+        onNewMessage (message) {
+            // console.log('manageris gavo zinute');
+            // console.log(message);
+            for (let prop in message) {
+                this[prop](message[prop]);
+            }
         }
 
     }

@@ -40,14 +40,14 @@ window.Mediator = (function (window) {
         }
 
         emit(eventName, payloud = null) {
-            console.log('buvo iskvieta mediatoriaus emit funkcija');
+            // console.log('buvo iskvieta mediatoriaus emit funkcija');
             if (!this.__eventHandler || !this.__eventHandler[eventName]) {
                 return;
             }
             let handler = this.__eventHandler[eventName];
             for (let i=0; i<handler.length; i++){
                 handler[i].apply(this, [].slice.call(arguments, 1));
-                console.log('Kvieciu funcija is mediatoriaus');
+                // console.log('Kvieciu funcija is mediatoriaus');
             }
         }
     }

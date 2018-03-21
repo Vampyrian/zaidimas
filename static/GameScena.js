@@ -4,7 +4,7 @@ window.GameScena = (function (window) {
     const canvasHeight = 320;
 
     const paddleWidth = 80;
-    const paddleHeight = 10;
+    const paddleHeight = 5;
     const paddleStep = 10;
 
     const ballRadius = 10;
@@ -12,45 +12,53 @@ window.GameScena = (function (window) {
 
     const color = "#0095DD";
 
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    const fpsDisplay = document.getElementById('fpsDisplay');
+
     class GameScena {
         constructor() {
-            this.canvas = document.getElementById('myCanvas');
-            this.ctx = this.canvas.getContext('2d');
+            // this.canvas = document.getElementById('myCanvas');
+            // this.ctx = this.canvas.getContext('2d');
 
-            this.fpsDisplay = document.getElementById('fpsDisplay');
+            // this.fpsDisplay = document.getElementById('fpsDisplay');
 
             this.gameState = {
                 player1: {
                     xpos: canvasWidth/2,
+                    life: 4,
                 },
                 player2: {
-                    xpos: null,
+                    xpos: canvasWidth/2,
+                    life: 4,
                 },
                 ball: {
-                    xpos: null,
-                    ypos: null
+                    xpos: canvasWidth/2,
+                    ypos: canvasHeight/2
                 }
             }
         }
 
         setState(gameState) {
             this.gameState = gameState;
+            this.render();
         }
 
         setFPS(fps) {
-            this.fpsDisplay.innerText(fps);
+            // this.fpsDisplay.innerText(fps);
+            fpsDisplay.innerText(fps);
         }
 
         render() {
-            let ctx = this.ctx;
+            // let ctx = this.ctx;
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             this.drawPaddle((this.gameState.player1.xpos - paddleWidth/2), (canvasHeight - paddleHeight));
-            this.drawPaddle((this.gameState.player2.xpos - paddleWidth/2), paddleHeight);
+            this.drawPaddle((this.gameState.player2.xpos - paddleWidth/2), 0);
             this.drawBall(this.gameState.ball.xpos, this.gameState.ball.ypos);
         }
 
         drawPaddle(x, y) {
-            let ctx = this.ctx;
+            // let ctx = this.ctx;
             ctx.beginPath();
             ctx.rect(x, y, paddleWidth, paddleHeight);
             ctx.fillStyle = color;
