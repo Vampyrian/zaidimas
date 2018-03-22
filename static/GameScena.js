@@ -14,7 +14,8 @@ window.GameScena = (function (window) {
 
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
-    const fpsDisplay = document.getElementById('fpsDisplay');
+    const browserFPS = document.getElementById('browserFPS');
+    const serverFPS = document.getElementById('serverFPS');
 
     class GameScena {
         constructor() {
@@ -44,9 +45,12 @@ window.GameScena = (function (window) {
             this.render();
         }
 
-        setFPS(fps) {
-            // this.fpsDisplay.innerText(fps);
-            fpsDisplay.innerText(fps);
+        setServerFPS(fps) {
+            serverFPS.innerText(fps);
+        }
+
+        setBrowserFPS(fps) {
+            browserFPS.innerText(fps);
         }
 
         render() {

@@ -1,6 +1,9 @@
-let controller = new GameController();
-let magictransport = new MagicTransport();
-var gameManager = new GameManager();
-gameManager.startGame();
+(function (window) {
 
+
+    const  app = new Application();
+    app.start();
+
+
+})(window)
 

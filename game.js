@@ -12,8 +12,8 @@ const paddleStep = 10;
 
 const ballRadius = 10;
 const ballStep = 10;
-let ballSpeedX = 1;
-let ballSpeedY = -1;
+let ballSpeedX = 2;
+let ballSpeedY = -2;
 
 
 module.exports = class Game {
@@ -103,7 +103,7 @@ module.exports = class Game {
     onLeft(id, count){
         switch (id) {
             case 'player1' : {
-                debug('pirmas i left' + id);
+                debug('Zaidejas ' + id + ' pajudejo i kaire');
                 if (this.gameState) {
                     this.gameState.player1.xpos = this.gameState.player1.xpos - paddleStep * count;
                     if ((this.gameState.player1.xpos - paddleWidth/2) < 0 ) {
@@ -113,11 +113,11 @@ module.exports = class Game {
                 break;
             }
             case 'player2' : {
-                debug('antras i left' + id);
+                debug('Zaidejas ' + id + ' pajudejo i kaire');
                 if (this.gameState) {
-                    this.gameState.player2.xpos = this.gameState.player2.xpos - paddleStep * count;
-                    if ((this.gameState.player2.xpos - paddleWidth/2) < 0 ) {
-                        this.gameState.player2.xpos = paddleWidth/2;
+                    this.gameState.player2.xpos = this.gameState.player2.xpos + paddleStep * count;
+                    if ((this.gameState.player2.xpos + paddleWidth/2) > canvasWidth ) {
+                        this.gameState.player2.xpos = canvasWidth - paddleWidth/2;
                     }
                 }
                 break;
@@ -129,7 +129,7 @@ module.exports = class Game {
     onRight(id, count) {
         switch (id) {
             case 'player1' : {
-                debug('pirmas i right' + id);
+                debug('Zaidejas ' + id + ' pajudejo i desine');
                 if (this.gameState) {
                     this.gameState.player1.xpos = this.gameState.player1.xpos + paddleStep * count;
                     if ((this.gameState.player1.xpos + paddleWidth/2) > canvasWidth ) {
@@ -139,11 +139,11 @@ module.exports = class Game {
                 break;
             }
             case 'player2' : {
-                debug('antras i right' + id);
+                debug('Zaidejas ' + id + ' pajudejo i desine');
                 if (this.gameState) {
-                    this.gameState.player2.xpos = this.gameState.player2.xpos + paddleStep * count;
-                    if ((this.gameState.player2.xpos + paddleWidth/2) > canvasWidth ) {
-                        this.gameState.player2.xpos = canvasWidth - paddleWidth/2;
+                    this.gameState.player2.xpos = this.gameState.player2.xpos - paddleStep * count;
+                    if ((this.gameState.player2.xpos - paddleWidth/2) < 0 ) {
+                        this.gameState.player2.xpos = paddleWidth/2;
                     }
                 }
                 break;
@@ -185,7 +185,7 @@ module.exports = class Game {
                 ypos: canvasHeight - paddleHeight - ballRadius,
             }
         };
-        this.interval = setInterval(()=>this.gameLoop(), 30);
+        this.interval = setInterval(()=>this.gameLoop(), 20);
     }
 
     gameLoop() {
@@ -206,7 +206,7 @@ module.exports = class Game {
         state.ball = {};
         state.player1.xpos = this.gameState.player1.xpos;
         state.player1.life = this.gameState.player1.life;
-        state.player2.xpos = canvasWidth - this.gameState.player2.xpos;
+        state.player2.xpos = this.gameState.player2.xpos;
         state.player2.life = this.gameState.player2.life;
         state.ball.xpos = this.gameState.ball.xpos;
         state.ball.ypos = this.gameState.ball.ypos;
@@ -219,7 +219,7 @@ module.exports = class Game {
         state.player1 = {};
         state.player2 = {};
         state.ball = {};
-        state.player1.xpos = this.gameState.player2.xpos;
+        state.player1.xpos = canvasWidth - this.gameState.player2.xpos;
         state.player1.life = this.gameState.player2.life;
         state.player2.xpos = canvasWidth - this.gameState.player1.xpos;
         state.player2.life = this.gameState.player1.life;
@@ -240,17 +240,18 @@ module.exports = class Game {
                 }
                 case 'player2' : {
                     let x = this.gameState.player2.xpos;
-                    this.gameState.ball.xpos = canvasWidth - x;
+                    this.gameState.ball.xpos = x;
                     this.gameState.ball.ypos = paddleHeight + ballRadius;
                     break;
                 }
             }
         }
-        this.gameState.ball.xpos += ballSpeedX;
-        if ((this.gameState.ball.xpos > canvasWidth - ballRadius) || (this.gameState.ball.xpos < 0)) {
+
+        if ((this.gameState.ball.xpos > canvasWidth - ballRadius) || (this.gameState.ball.xpos < ballRadius)) {
             ballSpeedX = -ballSpeedX;
         }
 
+        this.gameState.ball.xpos += ballSpeedX;
         this.gameState.ball.ypos += ballSpeedY;
     }
 
@@ -258,8 +259,6 @@ module.exports = class Game {
         if (this.gameState.ball.ypos > (canvasHeight - paddleHeight- ballRadius)
             && (this.gameState.ball.xpos < this.gameState.player1.xpos + paddleWidth/2)
                 && (this.gameState.ball.xpos > this.gameState.player1.xpos - paddleWidth/2)) {
-
-
             ballSpeedY = -ballSpeedY;
         }
         if (this.gameState.ball.ypos < (paddleHeight + ballRadius)
@@ -268,52 +267,22 @@ module.exports = class Game {
             ballSpeedY = -ballSpeedY;
         }
 
-        if (this.gameState.ball.ypos >= canvasHeight) {
-
-            debug('zaidimas baigesi1');
-            debug(this.gameState.ball.ypos > (canvasHeight - paddleHeight- ballRadius));
-            debug(this.gameState.ball.xpos < this.gameState.player1.xpos + paddleWidth/2);
-            debug(this.gameState.ball.xpos > this.gameState.player1.xpos - paddleWidth/2);
+        if (this.gameState.ball.ypos + ballRadius >= canvasHeight) {
 
             this.ballMove = false;
             this.ballOwner = 'player2';
-            ballSpeedY = +1;
+            ballSpeedY = Math.abs(ballSpeedY);
+            this.gameState.player1.life--;
         }
 
-        if(this.gameState.ball.ypos <= 0) {
-
-            debug('zaidimas baigesi2');
-            debug(this.gameState.ball.ypos < (paddleHeight + ballRadius));
-            debug(this.gameState.ball.xpos < (this.gameState.player2.xpos + paddleWidth/2));
-            debug(this.gameState.ball.xpos > this.gameState.player2.xpos - paddleWidth/2);
-
-            debug('salygos');
-            debug(this.gameState.ball.xpos + ' < ' + this.gameState.player2.xpos + ' + ' + paddleWidth/2);
-            debug((this.gameState.player2.xpos + paddleWidth/2));
+        if(this.gameState.ball.ypos - ballRadius <= 0) {
 
             this.ballMove = false;
             this.ballOwner = 'player1';
-            ballSpeedY = -1;
+            ballSpeedY = Math.abs(ballSpeedY) * -1;
+            this.gameState.player2.life--;
         }
     }
-    // function collisionDetection() {
-    //     for(c=0; c<brickColumnCount; c++) {
-    //         for(r=0; r<brickRowCount; r++) {
-    //             var b = bricks[c][r];
-    //             if(b.status == 1) {
-    //                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-    //                     dy = -dy;
-    //                     b.status = 0;
-    //                     score++;
-    //                     if(score == brickRowCount*brickColumnCount) {
-    //                         // alert("YOU WIN, CONGRATULATIONS!");
-    //                         // document.location.reload();
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     send(player, message) {
         this[player].send(JSON.stringify(message));

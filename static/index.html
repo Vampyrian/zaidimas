@@ -4,158 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link rel="stylesheet" href="css/preloaded.css">
+    <link rel="stylesheet" href="css/fireworks.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/my.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
 <body>
 
+    <h1 class="text-center">Stalo tenisas</h1>
 
-
-    <h1>Labas H1</h1>
-
-    <canvas id="myCanvas" width="480" height="320"> </canvas>
-    <p id="fpsDislay"></p>
-
-
-    <div id="subscribe">
-
+    <div id="greeting" class="container">
+        <form>
+            <div class="form-group">
+                <label for="name">Įveskite savo vardą</label>
+                <input type="text" class="form-control" id="name" placeholder="Vardenis Pavardenis">
+            </div>
+            <button type="submit" class="btn btn-primary my-1">Patvirtinti</button>
+        </form>
     </div>
 
-    <script>
-        'use strict';
-
-        // const magicTransport = new MagicTransport();
-        //
-        // document.forms.publish.onsubmit = function () {
-        //     var zinute = {};
-        //     zinute.zinute = this.message.value;
-        //     magicTransport.send(zinute);
-        //     return false;
-        // }
-
-
-
-        // var canvas = document.getElementById('myCanvas');
-        // var ctx = canvas.getContext('2d');
-        //
-        // var x = canvas.width/2;
-        // var y = canvas.height-30;
-        // var dx = 2;
-        // var dy = -2;
-        // var ballRadius = 10;
-        //
-        // var paddleHeight = 10;
-        // var paddleWidth = 75;
-        // var paddleX = (canvas.width-paddleWidth)/2;
-        //
-        // var brickRowCount = 3;
-        // var brickColumnCount = 5;
-        // var brickWidth = 75;
-        // var brickHeight = 20;
-        // var brickPadding = 10;
-        // var brickOffsetTop = 30;
-        // var brickOffsetLeft = 30;
-        //
-        // var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-        // var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-        //
-        // var score = 0;
-        // var lives = 3;
-        //
-        // var lastFrameTimeMs = 0;
-        // var maxFPS = 10;
-        //
-        // var bricks = [];
-        // for(var c=0; c<brickColumnCount; c++) {
-        //     bricks[c] = [];
-        //     for(var r=0; r<brickRowCount; r++) {
-        //         bricks[c][r] = { x: 0, y: 0, status: 1 };
-        //     }
-        // }
-        //
-        // function collisionDetection() {
-        //     for(c=0; c<brickColumnCount; c++) {
-        //         for(r=0; r<brickRowCount; r++) {
-        //             var b = bricks[c][r];
-        //             if(b.status == 1) {
-        //                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-        //                     dy = -dy;
-        //                     b.status = 0;
-        //                     score++;
-        //                     if(score == brickRowCount*brickColumnCount) {
-        //                         // alert("YOU WIN, CONGRATULATIONS!");
-        //                         // document.location.reload();
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        //
-        // function drawScore() {
-        //     ctx.font = "16px Arial";
-        //     ctx.fillStyle = "#0095DD";
-        //     ctx.fillText("Score: "+score, 8, 20);
-        // }
-        //
-        //
-        //
-        // function draw(timeStamp) {
-        //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //     drawBall();
-        //     drawPaddle();
-        //     drawBricks();
-        //     collisionDetection();
-        //     drawScore();
-        //     drawLives();
-        //
-        //
-        //
-        //     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-        //         dx = -dx;
-        //     }
-        //
-        //     if(y + dy < ballRadius) {
-        //         dy = -dy;
-        //     } else if(y + dy > canvas.height-ballRadius) {
-        //         if(x > paddleX && x < paddleX + paddleWidth) {
-        //             dy = -dy;
-        //         }
-        //         else {
-        //             lives--;
-        //             if(!lives) {
-        //                 // alert("GAME OVER");
-        //                 // document.location.reload();
-        //             }
-        //             else {
-        //                 x = canvas.width/2;
-        //                 y = canvas.height-30;
-        //                 dx = 2;
-        //                 dy = -2;
-        //                 paddleX = (canvas.width-paddleWidth)/2;
-        //             }
-        //         }
-        //     }
-        //
-        //     if(rightPressed && paddleX < canvas.width-paddleWidth) {
-        //         paddleX += 3;
-        //     }
-        //     else if(leftPressed && paddleX > 0) {
-        //         paddleX -= 3;
-        //     }
-        //
-        //     x += dx;
-        //     y += dy;
-        //     requestAnimationFrame(draw);
-        // }
-        //
-        //
-        //
-        //
-        // draw();
+    <div id="waiting" class="container">
+        <div style="transform:scale(0.75);">
+            <div class="cssload-thecube">
+                <div class="cssload-cube cssload-c1"></div>
+                <div class="cssload-cube cssload-c2"></div>
+                <div class="cssload-cube cssload-c4"></div>
+                <div class="cssload-cube cssload-c3"></div>
+            </div>
+        </div>
+        <h1>Prašome palaukti mes ieškome jums varžovo</h1>
+    </div>
 
 
-    </script>
+    <div id="game">
+        <canvas id="myCanvas" width="480" height="320"> </canvas>
+        <p id="browserFPS"></p>
+        <p id="serverFPS"></p>
+    </div>
+
+    <div id="finish" class="view-element finish-view">
+        <div class="pyro">
+            <div class="before"></div>
+            <div class="after"></div>
+        </div>
+        <div class="finish-view__results">
+            <h1 class="finish-view__header">Žaidimas pasibaigė</h1>
+            <h2 class="finish-view__result"></h2>
+        </div>
+    </div>
+
+
+
     <script src="events.js"></script>
     <script src="Mediator.js"></script>
     <script src="GameScena.js"></script>
@@ -163,7 +65,13 @@
 
     <script src="GameManager.js"></script>
     <script src="transport/MagicTransport.js"></script>
+    <script src="Application.js"></script>
     <script src="main.js"></script>
+
+    <!--Boostarp-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.js"></script>
 </body>
 
 </html>
