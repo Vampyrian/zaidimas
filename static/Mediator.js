@@ -7,10 +7,10 @@ window.Mediator = (function (window) {
 
         constructor() {
             if (Mediator.__instance) {
-                console.log('Sukuriu Madiator instance');
+                console.log('Grazinau Madiator instance');
                 return Mediator.__instance;
             }
-            console.log('Grazinau Madiator instance');
+            console.log('Sukuriau Madiator instance');
             Mediator.__instance = this;
         }
 
@@ -21,7 +21,7 @@ window.Mediator = (function (window) {
             if(!this.__eventHandler[eventName]) {
                 this.__eventHandler[eventName] = [];
             }
-            console.log('Pasirasiau ivikiui mediatoiuje');
+            console.log('Pasirasiau ivikiui mediatoiuje: ' + eventName);
             this.__eventHandler[eventName].push(func);
         }
 
@@ -33,7 +33,7 @@ window.Mediator = (function (window) {
                 for (let i=0; i<handler.length; i++) {
                     if (handler[i] == func) {
                         handler.splice(i--, 1);
-                        console.log('Atsirasiau nuo ivikio mediatoriuje');
+                        console.log('Atsirasiau nuo ivikio mediatoriuje: ' + eventName);
                     }
                 }
             }

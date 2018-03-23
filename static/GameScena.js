@@ -16,22 +16,24 @@ window.GameScena = (function (window) {
     const ctx = canvas.getContext('2d');
     const browserFPS = document.getElementById('browserFPS');
     const serverFPS = document.getElementById('serverFPS');
+    const player1Name = document.getElementById('player-1-name');
+    const player1Score = document.getElementById('player-1-score');
+    const player2Name = document.getElementById('player-2-name');
+    const player2Score = document.getElementById('player-2-score');
 
     class GameScena {
         constructor() {
-            // this.canvas = document.getElementById('myCanvas');
-            // this.ctx = this.canvas.getContext('2d');
-
-            // this.fpsDisplay = document.getElementById('fpsDisplay');
 
             this.gameState = {
                 player1: {
                     xpos: canvasWidth/2,
                     life: 4,
+                    name: '',
                 },
                 player2: {
                     xpos: canvasWidth/2,
                     life: 4,
+                    name: '',
                 },
                 ball: {
                     xpos: canvasWidth/2,
@@ -54,7 +56,11 @@ window.GameScena = (function (window) {
         }
 
         render() {
-            // let ctx = this.ctx;
+            player1Name.innerText = this.gameState.player1.name;
+            player1Score.innerText = this.gameState.player1.life;
+            player2Name.innerText = this.gameState.player2.name;
+            player2Score.innerText = this.gameState.player2.life;
+
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             this.drawPaddle((this.gameState.player1.xpos - paddleWidth/2), (canvasHeight - paddleHeight));
             this.drawPaddle((this.gameState.player2.xpos - paddleWidth/2), 0);
@@ -62,7 +68,6 @@ window.GameScena = (function (window) {
         }
 
         drawPaddle(x, y) {
-            // let ctx = this.ctx;
             ctx.beginPath();
             ctx.rect(x, y, paddleWidth, paddleHeight);
             ctx.fillStyle = color;

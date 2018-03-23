@@ -39,11 +39,11 @@ module.exports = class Game {
             debug('Pridedam pirma zaideja');
             this.player1 = player;
             id = 'player1';
+            this.setEmptyGameState();
         } else if (!this.player2) {
             debug('Pridedam antra zaideja');
             this.player2 = player;
             id = 'player2';
-            this.startNewGame();
         } else {
             debug('Nebera vietos naujiems zaidejams');
             return;
@@ -60,6 +60,25 @@ module.exports = class Game {
             this.stopGame(id);
         });
         // console.dir(this);
+    }
+
+    setEmptyGameState () {
+        this.gameState = {
+            player1: {
+                xpos: canvasWidth/2,
+                life: 3,
+                name: '',
+            },
+            player2: {
+                xpos: canvasWidth/2,
+                life: 3,
+                name: '',
+            },
+            ball: {
+                xpos: canvasWidth/2,
+                ypos: canvasHeight - paddleHeight - ballRadius,
+            }
+        };
     }
 
     /**
@@ -93,7 +112,13 @@ module.exports = class Game {
         debug('Gavau nauja zinute is ' + id + ' ir tekstu ' + msg);
         let message = JSON.parse(msg);
 
+
         for (let prop in message) {
+            //Kazkodel tas tik taip veikia
+            if (prop == 'setPlayerName') {
+                this.setPlayerName(id, message[prop]);
+            }
+
             if (message[prop] > 0) {
                 this[prop](id, message[prop]);
             }
@@ -169,22 +194,22 @@ module.exports = class Game {
         }
     }
 
+    setPlayerName(id, name) {
+        debug('Nustatau ' + id + ' varda ' + name);
+        this.gameState[id].name = name;
+
+        if (this.gameState.player1.name !== '' && this.gameState.player2.name !== '') {
+            this.startNewGame();
+        }
+
+    }
+
     startNewGame () {
         debug('Pasileido naujas zaidimas');
-        this.gameState = {
-            player1: {
-                xpos: canvasWidth/2,
-                life: 3,
-            },
-            player2: {
-                xpos: canvasWidth/2,
-                life: 3,
-            },
-            ball: {
-                xpos: canvasWidth/2,
-                ypos: canvasHeight - paddleHeight - ballRadius,
-            }
-        };
+        let nameForPlayer1 = {};
+        let nameForPlayer2 = {};
+        this.send('player1', {startGame: ''});
+        this.send('player2', {startGame: ''});
         this.interval = setInterval(()=>this.gameLoop(), 20);
     }
 
@@ -192,9 +217,20 @@ module.exports = class Game {
         // debug('Pasileido gameLoop');
         this.calculateBallPosition();
         this.collisionDetection();
-        if(this.gameState) {
-            this.send('player1', this.prepareToPlayer1());
-            this.send('player2', this.prepareToPlayer2());
+
+        if (this.gameState.player1.life < 1) {
+            this.send('player1', {gameOver: 'Jūs pralaimėjote'});
+            this.send('player2', {gameOver: 'Sveikiname, jūs laimėjote'});
+            clearInterval(this.interval);
+        } else if (this.gameState.player2.life < 1) {
+            this.send('player2', {gameOver: 'Jūs pralaimėjote'});
+            this.send('player1', {gameOver: 'Sveikiname, jūs laimėjote'});
+            clearInterval(this.interval);
+        } else {
+            if(this.gameState) {
+                this.send('player1', this.prepareToPlayer1());
+                this.send('player2', this.prepareToPlayer2());
+            }
         }
     }
 
@@ -208,6 +244,8 @@ module.exports = class Game {
         state.player1.life = this.gameState.player1.life;
         state.player2.xpos = this.gameState.player2.xpos;
         state.player2.life = this.gameState.player2.life;
+        state.player1.name = this.gameState.player1.name;
+        state.player2.name = this.gameState.player2.name;
         state.ball.xpos = this.gameState.ball.xpos;
         state.ball.ypos = this.gameState.ball.ypos;
         return {'onNewState': state};
@@ -225,6 +263,8 @@ module.exports = class Game {
         state.player2.life = this.gameState.player1.life;
         state.ball.xpos = canvasWidth - this.gameState.ball.xpos;
         state.ball.ypos = canvasHeight - this.gameState.ball.ypos;
+        state.player1.name = this.gameState.player1.name;
+        state.player2.name = this.gameState.player2.name;
 
         return {'onNewState' : state};
     }

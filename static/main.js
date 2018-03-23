@@ -1,8 +1,10 @@
 (function (window) {
 
+    let transport = new window.MagicTransport();
 
-    const  app = new Application();
-    app.start();
+    let gameManager = new window.GameManager();
+    gameManager.start();
+
 
 
 })(window)
